@@ -1,29 +1,6 @@
 import cv2
 import numpy as np
 
-def removeBackgroundFromImageWithSolidBG(image):
-    # Convert the image to grayscale
-    grayScaleImage = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-    # Convert the grayscale image to binary image
-    # 120 is the threshold value which is used to classify the pixel values
-    # If pixel value is below 120, it is considered as black, else it is considered as white
-    # 255 is the max value/o0uu
-    _, thresholdImage = cv2.threshold(grayScaleImage, 245, 255, cv2.THRESH_BINARY)
-    cv2.imshow("Threshold Image", thresholdImage)
-    cv2.waitKey(0)
-    # Find the contours
-    contours, hierarchy = cv2.findContours(thresholdImage, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    # Create a mask with the largest contour
-    mask = np.zeros(image.shape, np.uint8)
-    # cv2.drawContours(mask, [max(contours, key=cv2.contourArea)], -1, (255, 255, 255), -1)
-
-    # Create a image with the foreground pixels set to zero
-    imageWithBGRemoved = cv2.bitwise_not(image, mask)
-    cv2.imshow("Image with Background Removed", imageWithBGRemoved)
-    cv2.waitKey(0)
-    return imageWithBGRemoved
-
 def remove_background(image_path, smoothing_radius=1):
     # Read the image
     img = cv2.imread(image_path)
@@ -73,8 +50,9 @@ def replace_transparent_with_color(img, new_color=(255, 0, 0, 255), feathering_r
 
 image_path = "test.jpg"
 bg = remove_background(image_path)
-new_color_img = replace_transparent_with_color(bg, new_color=(255, 0, 255, 255))
-cv2.imwrite("test_bg_removed.png", new_color_img)
+cv2.imwrite("test_bg_removed.png", bg)
+new_color_img = replace_transparent_with_color(bg, new_color=(227,219,171, 255))
+cv2.imwrite("test_bg_changed.png", new_color_img)
 # image = cv2.imread(image_path)
 # image = removeBackgroundFromImageWithSolidBG(image)
 # cv2.imwrite("test_bg_removed.jpg", image)
